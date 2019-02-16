@@ -1,5 +1,5 @@
-var mysql = require("mysql");
-var inquirer = require("inquirer");
+var mysql = require('mysql');
+var inquirer = require('inquirer');
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -15,8 +15,36 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
   });
 
-  // connect to the mysql server and sql database
+  // connect to the mysql server and display list of items availible
 connection.connect(function(err) {
     if (err) throw err;
-    // run the start function after the connection is made to prompt the user
+    console.log ("Successful Connection!");
+    connection.query("SELECT * FROM products", function (err, result) {
+      if (err) throw err;
+      console.log(result);
+      buy();
+
+    });
+      
   });
+
+ function buy(){
+   inquirer.prompt([
+     {
+       name: "item_ID",
+       type: "input",
+       message: "Please select your item ID"
+     },
+     {
+       name: "stock_quantity",
+       type: "input",
+       message: "Please select the quantity"
+     },
+   ]).then(function(answer){
+    var ID = answer.ID;
+    var quantity = answer.quantity;
+    purchased(ID, quantity);
+   });
+ };
+  
+ //check db for quantity available
